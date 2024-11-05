@@ -219,6 +219,8 @@ function calculatePayment() {
         person[index].pay = 0;
     }
 
+    
+
     orderList.forEach((order) => {
         const payment = order.pay / order.persons.length;
 
@@ -232,6 +234,9 @@ function calculatePayment() {
             }
         })
     })
+
+    const totalAmount = person.reduce((sum, p) => sum + p.pay, 0);
+    document.getElementById('headerList').textContent = `ทั้งหมด ${person.length} คน / รวม ${totalAmount} บาท`;
 }
 
 // fetchDataHTML()

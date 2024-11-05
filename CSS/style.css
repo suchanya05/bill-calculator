@@ -1,0 +1,40 @@
+.container-bg {
+    background-image: url('../img/พื้นหลัง.jpg'); /* เส้นทางไปยังภาพพื้นหลัง */
+    width: 100vw;                /* ใช้ความกว้างเต็มจอ */
+    height: 100vh;               /* ใช้ความสูงเต็มจอ */
+    display: flex;               /* ใช้งาน Flexbox */
+
+}
+
+.body-block {
+    background-color: lightgrey;
+}
+
+.bg-light {
+    border-radius: 10px;         /* เพิ่มความโค้งมนให้กับพื้นหลัง */
+    opacity: 0.9;                /* ทำให้พื้นหลังเบลอเล็กน้อย */
+    display: flex;               /* ใช้งาน Flexbox */
+    flex-direction: column;      /* จัดตำแหน่งแนวตั้ง */
+    justify-content: center;     /* จัดเนื้อหาให้อยู่ตรงกลางแนวนอน */
+    align-items: center;         /* จัดเนื้อหาให้อยู่ตรงกลางแนวตั้ง */
+    height: 100%;                /* ทำให้ div มีความสูงเต็มที่ */
+}
+
+.header {
+    font-size: 2rem;
+}
+
+.Subtopic {
+    font-size: 1.5rem; /* ปรับขนาดฟอนต์ */
+    margin: 0;         /* ปรับ margin ให้เป็น 0 */
+}
+
+.text-content {
+    font-size: 1rem; /* ปรับขนาดฟอนต์ */
+    padding-right: 10px;
+}
+.row{
+    width: 100%;
+    padding-inline: 0;
+    margin-inline: 0;
+}

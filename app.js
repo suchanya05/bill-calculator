@@ -187,7 +187,7 @@ function updateOrder(orderName, pay) {
         orderList.push({
             orderName: orderName,
             pay: 0,
-            payWithVat: pay*1.07,
+            payWithVat: pay * 1.07,
             payNoVat: pay,
             persons: persons,
         });
@@ -263,7 +263,7 @@ function calculatePayment() {
     orderList.forEach((order) => {
         if (vatChecked) {
             order.pay = order.payWithVat
-        }else{
+        } else {
             order.pay = order.payNoVat
         }
         order.pay = Math.round(order.pay)
@@ -333,35 +333,38 @@ function exportImg() {
     }
 }
 
-function genPP() {
-    var mobile = prompt("กรอกหมายเลขพร้อมเพย์");
-    const orderContainer = document.getElementById('qrPromptpay');
-    orderContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
+function addPP() {
+    // สร้างช่องสำหรับอัปโหลดไฟล์
+    const inputFile = document.createElement('input');
+    inputFile.type = 'file';
+    inputFile.accept = 'image/*';  // รับเฉพาะไฟล์รูปภาพ
 
-    if (mobile) {
-        // ใช้ CORS Anywhere เพื่อดึงภาพจาก PromptPay
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const imageUrl = `https://promptpay.io/${mobile}.png`;
+    // เมื่อเลือกไฟล์แล้ว
+    inputFile.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // สร้างแสดงผลรูปภาพใน <div id="qrPromptpay">
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;  // กำหนด source ของรูป
+                imgElement.style.maxWidth = '100%';  // ปรับขนาดรูปภาพให้พอดีกับ div
+                imgElement.style.height = 'auto';
+                imgElement.alt = 'PromptPay QR';  // ข้อความแทนหากรูปไม่สามารถแสดงได้
+                
+                // เพิ่มรูปภาพที่อัปโหลดเข้าไปใน div
+                const qrDiv = document.getElementById('qrPromptpay');
+                qrDiv.innerHTML = '';  // ลบข้อมูลเก่าออกก่อนแสดงข้อมูลใหม่
+                qrDiv.appendChild(imgElement);  // เพิ่มรูปภาพเข้าไป
+            };
+            
+            reader.readAsDataURL(file);  // อ่านไฟล์เป็น base64
+        }
+    });
 
-        fetch(proxyUrl + imageUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = function () {
-                    const base64Image = reader.result;
-                    const img = document.createElement('img');
-                    img.className = 'col-12 my-2';
-                    img.src = base64Image; // ใช้ Base64 แทน URL
-                    orderContainer.appendChild(img);
-                };
-                reader.readAsDataURL(blob);
-            })
-            .catch(error => {
-                console.error('Error fetching the QR image:', error);
-                alert('ไม่สามารถดึงข้อมูล QR Code ได้');
-            });
-    }
+    // คลิกเพื่อเลือกไฟล์
+    inputFile.click();
 }
-
 
 // fetchDataHTML()

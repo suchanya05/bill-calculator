@@ -1,7 +1,7 @@
 .container-bg {
     background-image: url('../img/C.jpg'); /* เส้นทางไปยังภาพพื้นหลัง */
-    width: 50vw;                /* ใช้ความกว้างเต็มจอ */
-    height: 50vh;               /* ใช้ความสูงเต็มจอ */
+    width: 80vw;                /* ใช้ความกว้างเต็มจอ */
+    height: 80vh;               /* ใช้ความสูงเต็มจอ */
     display: flex;               /* ใช้งาน Flexbox */
 
 }

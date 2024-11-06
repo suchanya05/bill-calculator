@@ -309,16 +309,34 @@ function exportImg() {
 }
 
 function genPP() {
-    var mobile = ''
-    mobile = prompt("กรอกหมายเลขพร้อมเพย์")
+    var mobile = prompt("กรอกหมายเลขพร้อมเพย์");
     const orderContainer = document.getElementById('qrPromptpay');
     orderContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
+    
     if (mobile) {
-        const img = document.createElement('img');
-        img.className = 'col-12 my-2';
-        img.src = `https://promptpay.io/${mobile}.png`;
-        orderContainer.appendChild(img);
+        // ใช้ CORS Anywhere เพื่อดึงภาพจาก PromptPay
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const imageUrl = `https://promptpay.io/${mobile}.png`;
+
+        fetch(proxyUrl + imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const base64Image = reader.result;
+                    const img = document.createElement('img');
+                    img.className = 'col-12 my-2';
+                    img.src = base64Image; // ใช้ Base64 แทน URL
+                    orderContainer.appendChild(img);
+                };
+                reader.readAsDataURL(blob);
+            })
+            .catch(error => {
+                console.error('Error fetching the QR image:', error);
+                alert('ไม่สามารถดึงข้อมูล QR Code ได้');
+            });
     }
 }
+
 
 // fetchDataHTML()

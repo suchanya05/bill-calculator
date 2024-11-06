@@ -57,3 +57,7 @@
 .w-full{
     width: 100%;
 }
+
+.alig-item-right{
+    align-content: end;
+}

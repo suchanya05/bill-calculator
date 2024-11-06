@@ -44,6 +44,7 @@ function createButtons() {
 function createPersonList() {
     const personContainer = document.getElementById('personContainer');
     personContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
+    // constisVat = document.getElementById('vatCheckbox').checked
     if (person.length > 0) {
         const header = document.createElement('span');
         header.className = 'mb-2 fs-3 fw-bold text-left';
@@ -147,9 +148,8 @@ function createOrderList() {
         icon.id = `icon${index + 1}`
         const button = document.createElement('button');
         button.type = 'button';
-        // button.className = 'btn btn-outline-danger btn-sm row';
+        button.className = 'btn btn-outline-danger btn-sm row';
         button.appendChild(icon);
-        button.getElementById(`icon${index + 1}`).className = 'btn btn-outline-danger btn-sm row'
 
         // จัดการเมื่อคลิกปุ่ม
         button.onclick = function () {
@@ -186,8 +186,10 @@ function updateOrder(orderName, pay) {
         let persons = personListInOrder
         orderList.push({
             orderName: orderName,
-            pay: pay,
-            persons: persons
+            pay: 0,
+            payWithVat: pay*1.07,
+            payNoVat: pay,
+            persons: persons,
         });
         console.log(orderList);
 
@@ -254,9 +256,17 @@ function calculatePayment() {
         person[index].pay = 0;
     }
 
-
+    // ตรวจสอบการคำนวณ VAT
+    const vatChecked = document.getElementById('vatCheckbox').checked;
+    let totalAmountWithoutVAT = 0;
 
     orderList.forEach((order) => {
+        if (vatChecked) {
+            order.pay = order.payWithVat
+        }else{
+            order.pay = order.payNoVat
+        }
+        order.pay = Math.round(order.pay)
         const payment = order.pay / order.persons.length;
 
         order.persons.forEach((personInOrder) => {
@@ -268,11 +278,26 @@ function calculatePayment() {
                 }
             }
         })
+        totalAmountWithoutVAT += order.pay;
     })
 
-    const totalAmount = person.reduce((sum, p) => sum + p.pay, 0);
-    document.getElementById('headerList').textContent = `ทั้งหมด ${person.length} คน / รวม ${totalAmount} บาท`;
+    let totalAmount = person.reduce((sum, p) => sum + p.pay, 0);
+    if (vatChecked) {
+        const vatAmount = totalAmountWithoutVAT * 0.07;
+        totalAmount += vatAmount;
+        // แสดง VAT
+        document.getElementById('vatAmount').textContent = `VAT 7%: ${Math.round(vatAmount)} บาท`;
+    } else {
+        document.getElementById('vatAmount').textContent = '';
+    }
+
+    // แสดงยอดรวม
+    document.getElementById('headerList').textContent = `ทั้งหมด ${person.length} คน / รวม ${Math.round(totalAmount)} บาท`;
 }
+
+// ฟังก์ชันคำนวณเมื่อมีการเปลี่ยนแปลงสถานะของเช็คบ็อกซ์
+
+
 
 function exportImg() {
     const target = document.getElementById('personContent');
@@ -312,7 +337,7 @@ function genPP() {
     var mobile = prompt("กรอกหมายเลขพร้อมเพย์");
     const orderContainer = document.getElementById('qrPromptpay');
     orderContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
-    
+
     if (mobile) {
         // ใช้ CORS Anywhere เพื่อดึงภาพจาก PromptPay
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';

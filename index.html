@@ -25,22 +25,29 @@
                         </div>
                         <div class="col-md-4">
                             <button type="button" class="btn btn-outline-success row btn-sm "
-                                onclick="updatePerson(document.getElementById('personName').value)"><i
-                                    class="bi bi-plus-lg"></i></button>
-                        </div>
-                    </div>
-                    <div id="personContent" class="border-bottom pb-3 mb-2 row">
-                        <div id="personContainer" class="row py-3"></div>
-                        <div id="qrPromptpay" class="row">
+                                onclick="updatePerson(document.getElementById('personName').value)">เพิ่ม</button>
                         </div>
                     </div>
 
+                    <div id="personContent" class="border-bottom pb-2 mb-2 row">
+                        <div id="personContainer" class="row py-3"></div>
+                        <p id="vatAmount" class="text-right"></p>
+                        <div class="row ">
+                            <span id="headerList" class="fs-4 fw-bold">ทั้งหมด 0 คน / รวม 0 บาท</span>
+                        </div>
+                        <div id="qrPromptpay" class="row mb-2"></div>
+                    </div>
                 </div>
-                <div class="row p-2">
-                    <button type="button" class="btn btn-outline-success col-12 btn-sm mb-2"
-                        onclick="exportImg()">บันทึกรูป</button>
-                    <button type="button" class="btn btn-outline-primary col-12 btn-sm" onclick="genPP()">QR
+                <div class="row p-2 justify-content-md-end">
+                    <div class=" col-md-4 mb-2 text-right">
+                        <input type="checkbox" class="form-check-input ms-2" id="vatCheckbox" onclick="fetchDataHTML()">
+                        <label class="form-check-label" for="vatCheckbox">VAT (+7%)</label>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-primary col-12 btn-sm mb-2" onclick="genPP()">QR
                         PromptPay</button>
+                    <button type="button" class="btn btn-outline-success col-12 btn-sm "
+                        onclick="exportImg()">บันทึกรูป</button>
                 </div>
             </div>
             <div class="col-md-8 border">
@@ -56,8 +63,7 @@
 
                         <div class="col-md-2">
                             <button type="button" class="btn btn-outline-success row btn-sm "
-                                onclick="updateOrder(document.getElementById('orderName').value,document.getElementById('orderPay').value)"><i
-                                    class="bi bi-plus-lg"></i></button>
+                                onclick="updateOrder(document.getElementById('orderName').value,document.getElementById('orderPay').value)">เพิ่ม</i></button>
                         </div>
                     </div>
                     <div class="row my-1">
@@ -70,9 +76,6 @@
                     <div id="buttonContainer" class="row py-3"></div>
                 </div>
                 <div id="orderContainer" class="row py-3"></div>
-                <div class="row mt-2">
-                    <span id="headerList" class="mb-3 fs-3 fw-bold">ทั้งหมด 0 คน / รวม 0 บาท</span>
-                </div>
 
             </div>
 

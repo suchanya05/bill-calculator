@@ -47,7 +47,7 @@ function createPersonList() {
     // constisVat = document.getElementById('vatCheckbox').checked
     if (person.length > 0) {
         const header = document.createElement('span');
-        header.className = 'mb-2 fs-3 fw-bold text-left';
+        header.className = 'mb-2 fs-3 fw-bold text-left text-rgb';
         header.textContent = `รายชื่อ`;
         personContainer.appendChild(header);
     }

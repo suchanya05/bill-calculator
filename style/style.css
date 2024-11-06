@@ -1,7 +1,7 @@
 .container-bg {
-    background-image: url('../img/พื้นหลัง.jpg'); /* เส้นทางไปยังภาพพื้นหลัง */
-    width: 100vw;                /* ใช้ความกว้างเต็มจอ */
-    height: 100vh;               /* ใช้ความสูงเต็มจอ */
+    background-image: url('../img/C.jpg'); /* เส้นทางไปยังภาพพื้นหลัง */
+    width: 50vw;                /* ใช้ความกว้างเต็มจอ */
+    height: 50vh;               /* ใช้ความสูงเต็มจอ */
     display: flex;               /* ใช้งาน Flexbox */
 
 }
@@ -60,4 +60,8 @@
 
 .alig-item-right{
     align-content: end;
+}
+
+.text-rgb {
+    color: rgb(42, 78, 143);
 }

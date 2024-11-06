@@ -44,16 +44,21 @@ function createButtons() {
 function createPersonList() {
     const personContainer = document.getElementById('personContainer');
     personContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
-
+    if (person.length > 0) {
+        const header = document.createElement('span');
+        header.className = 'mb-2 fs-3 fw-bold text-left';
+        header.textContent = `รายชื่อ`;
+        personContainer.appendChild(header);
+    }
 
     // วน loop เพื่อสร้างปุ่มสำหรับแต่ละ person
     person.forEach((item, index) => {
         // สร้าง div เพื่อเก็บปุ่มและข้อความ
         const textDiv = document.createElement('div');
-        textDiv.className = 'col-6 col-md-6 mb-1';
+        textDiv.className = 'col-6 col-md-5 mb-1';
 
         const payDiv = document.createElement('div');
-        payDiv.className = 'col-6 col-md-3 mb-1 text-right';
+        payDiv.className = 'col-6 col-md-4 mb-1 text-right';
 
         const btnDiv = document.createElement('div');
         btnDiv.className = 'col-md-3 mb-2 text-center';
@@ -71,7 +76,7 @@ function createPersonList() {
         const textPay = document.createElement('span');
         // text.type = 'button';
         textPay.className = 'text-right';
-        textPay.textContent = `${Math.round(item.pay)} บาท`;
+        textPay.textContent = `จ่าย ${Math.round(item.pay)} บาท`;
 
 
 
@@ -125,7 +130,7 @@ function createOrderList() {
         const text = document.createElement('span');
         // text.type = 'button';
         text.className = 'text-start';
-        text.textContent = `${item.orderName}`;
+        text.textContent = `${index + 1}. ${item.orderName}`;
 
 
 
@@ -139,11 +144,12 @@ function createOrderList() {
 
         const icon = document.createElement('i');
         icon.className = "bi bi-trash3";
-
+        icon.id = `icon${index + 1}`
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn-outline-danger btn-sm row';
+        // button.className = 'btn btn-outline-danger btn-sm row';
         button.appendChild(icon);
+        button.getElementById(`icon${index + 1}`).className = 'btn btn-outline-danger btn-sm row'
 
         // จัดการเมื่อคลิกปุ่ม
         button.onclick = function () {
@@ -161,8 +167,7 @@ function createOrderList() {
 
 function updatePerson(input) {
     if (!input) {
-        console.log("ใส่ชื่อด้วยจั๊บ");
-
+        alert("กรุณากรอกชื่อ")
     } else {
         person.push({ name: input, pay: 0 });
         document.getElementById('personName').value = "";
@@ -171,20 +176,28 @@ function updatePerson(input) {
 }
 
 function updateOrder(orderName, pay) {
+    if (!orderName) {
+        alert("กรุณากรอกชื่อรายการอาหาร")
+    } else if (!pay) {
+        alert("กรุณากรอกราคาอาหาร")
+    } else if (personListInOrder.length == 0) {
+        alert("กรุณาเลือกคนที่ต้องการหารในรายการ")
+    } else {
+        let persons = personListInOrder
+        orderList.push({
+            orderName: orderName,
+            pay: pay,
+            persons: persons
+        });
+        console.log(orderList);
 
-    orderList.push({
-        orderName: orderName,
-        pay: pay,
-        persons: personListInOrder
-    });
-    console.log(orderList);
 
+        personListInOrder = []
+        document.getElementById('orderPay').value = "";
+        document.getElementById('orderName').value = "";
+        fetchDataHTML()
+    }
 
-    // personListInOrder = []
-
-    document.getElementById('orderPay').value = "";
-    document.getElementById('orderName').value = "";
-    fetchDataHTML()
 }
 
 // ฟังก์ชันอัปเดตการแสดงค่า pay ของแต่ละคน
@@ -221,6 +234,7 @@ function addPersonToOrder(personName) {
 }
 
 function addAllPersonToOrder() {
+    personListInOrder = []
     person.forEach((item) => {
         personListInOrder.push({ name: item.name })
     })
@@ -231,10 +245,11 @@ function addAllPersonToOrder() {
 function deletePersonToOrder(personName) {
     personListInOrder = personListInOrder.filter(p => p.name !== personName);
     fetchDataHTML()
-    // personListInOrder.push({name:personName})
 }
 
 function calculatePayment() {
+
+
     for (let index = 0; index < person.length; index++) {
         person[index].pay = 0;
     }
@@ -261,16 +276,41 @@ function calculatePayment() {
 
 function exportImg() {
     const target = document.getElementById('personContent');
-    html2canvas(target).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'screenshot.png';
-        link.click();
+    const images = target.getElementsByTagName('img');
+    let loaded = 0;
+
+    // โหลดภาพให้เสร็จ
+    Array.from(images).forEach(image => {
+        if (image.complete) {
+            loaded++;
+        } else {
+            image.onload = () => {
+                loaded++;
+                if (loaded === images.length) {
+                    generateCanvas();
+                }
+            };
+        }
     });
+
+    // ถ้าทุกภาพโหลดเสร็จแล้ว
+    if (loaded === images.length) {
+        generateCanvas();
+    }
+
+    function generateCanvas() {
+        html2canvas(target, { useCORS: true }).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'screenshot.png';
+            link.click();
+        });
+    }
 }
 
-function genPP(){
-    var mobile = '0861013817'
+function genPP() {
+    var mobile = ''
+    mobile = prompt("กรอกหมายเลขพร้อมเพย์")
     const orderContainer = document.getElementById('qrPromptpay');
     orderContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
     if (mobile) {

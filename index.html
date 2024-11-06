@@ -16,10 +16,10 @@
 <body class="body-block">
     <div class="container bg-light p-3">
         <div class="row ">
-            <div class="col-md-4 border" id="personContent">
-                <div class="row mt-3">
-                    <span class="mb-3 fs-3 fw-bold">รายชื่อ</span>
-                    <div class="row ">
+            <div class="col-md-4 border">
+                <div class="row mt-3 ">
+                    <span class="mb-2 fs-3 fw-bold">เพิ่มรายชื่อ</span>
+                    <div class="row border-bottom pb-3">
                         <div class="col-md-8 mb-1">
                             <input id="personName" type="text" class="row" placeholder=" ชื่อ">
                         </div>
@@ -29,15 +29,21 @@
                                     class="bi bi-plus-lg"></i></button>
                         </div>
                     </div>
-                    <div id="personContainer" class="row py-3"></div>
-                    <div class="row">
-                        <button type="button" class="text-btn text-right col-12" onclick="genPP()">สร้าง Qr
-                            promptpay</button>
-                    </div>
-                    <div id="qrPromptpay" class="row">
-                    </div>
-                </div>
+                    <div id="personContent" class="border-bottom pb-3 mb-2 row">
+                        <div id="personContainer" class="row py-3"></div>
 
+                        <div id="qrPromptpay" class="row">
+                        </div>
+                    </div>
+
+                </div>
+                <div id="btnGen" class="row">
+
+                    <button type="button" class="btn btn-outline-success row btn-sm mb-2"
+                        onclick="exportImg()">บันทึกรูป</button>
+                    <button type="button" class="btn btn-outline-primary row btn-sm" onclick="genPP()">Qr
+                        promptpay</button>
+                </div>
             </div>
             <div class="col-md-8 border">
                 <div class="row border-bottom py-3">

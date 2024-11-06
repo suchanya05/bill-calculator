@@ -1,5 +1,5 @@
 .container-bg {
-    background-image: url('../img/C.jpg'); /* เส้นทางไปยังภาพพื้นหลัง */
+    background-image: url('../img/bggif.gif'); /* เส้นทางไปยังภาพพื้นหลัง */
     width: 100vw;                /* ใช้ความกว้างเต็มจอ */
     height: 100vh;               /* ใช้ความสูงเต็มจอ */
     display: flex;               /* ใช้งาน Flexbox */
@@ -64,4 +64,8 @@
 
 .text-rgb {
     color: rgb(42, 78, 143);
+}
+
+body {
+    font-family: 'Itim', sans-serif;
 }

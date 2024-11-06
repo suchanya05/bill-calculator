@@ -56,13 +56,13 @@ function createPersonList() {
     person.forEach((item, index) => {
         // สร้าง div เพื่อเก็บปุ่มและข้อความ
         const textDiv = document.createElement('div');
-        textDiv.className = 'col-6 col-md-5 mb-1';
+        textDiv.className = 'col-6  mb-1';
 
         const payDiv = document.createElement('div');
-        payDiv.className = 'col-6 col-md-4 mb-1 text-right';
+        payDiv.className = 'col-6  mb-1 text-right';
 
         const btnDiv = document.createElement('div');
-        btnDiv.className = 'col-md-3 mb-2 text-center';
+        btnDiv.className = 'col-12 mb-2 text-center';
 
 
 
@@ -109,22 +109,24 @@ function createOrderList() {
     orderContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
     if (orderList.length > 0) {
         const header = document.createElement('span');
-        header.className = 'mb-2 fs-3 fw-bold text-left';
+        header.className = 'mb-2 fs-3 fw-bold text-left text-rgb';
         header.textContent = `รายการสินค้า`;
         orderContainer.appendChild(header);
     }
     // วน loop เพื่อสร้างปุ่มสำหรับแต่ละ person
     orderList.forEach((item, index) => {
-        // สร้าง div เพื่อเก็บปุ่มและข้อความ
+
         const textDiv = document.createElement('div');
-        textDiv.className = 'col-6 col-md-6 mb-3';
+        textDiv.className = 'col-6 mb-2';
 
         const payDiv = document.createElement('div');
-        payDiv.className = 'col-6 col-md-4 mb-3 text-start';
+        payDiv.className = 'col-6 mb-2 text-start';
+
+        const listDiv = document.createElement('div');
+        listDiv.className = 'col-md-10 mb-2 text-start';
 
         const btnDiv = document.createElement('div');
-        btnDiv.className = 'col-md-2 mb-3 text-center';
-
+        btnDiv.className = 'col-md-2 mb-2 text-center';
 
 
         // สร้างปุ่ม
@@ -161,6 +163,7 @@ function createOrderList() {
 
         orderContainer.appendChild(textDiv);
         orderContainer.appendChild(payDiv);
+        orderContainer.appendChild(listDiv)
         orderContainer.appendChild(btnDiv);
     });
 }
@@ -300,38 +303,56 @@ function calculatePayment() {
 
 
 function exportImg() {
-    const target = document.getElementById('personContent');
-    const images = target.getElementsByTagName('img');
-    let loaded = 0;
+    const orderChecked = document.getElementById('orderCheckbox').checked;
 
-    // โหลดภาพให้เสร็จ
-    Array.from(images).forEach(image => {
-        if (image.complete) {
-            loaded++;
-        } else {
-            image.onload = () => {
-                loaded++;
-                if (loaded === images.length) {
-                    generateCanvas();
-                }
-            };
-        }
+    // ซ่อนทุกปุ่มในหน้า
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.style.display = 'none';
     });
 
-    // ถ้าทุกภาพโหลดเสร็จแล้ว
-    if (loaded === images.length) {
-        generateCanvas();
+    const credit = document.getElementById('credit');
+    credit.style.display = 'inline-block';
+
+    const orderOnBill = document.getElementById("orderOnBill");
+    const orderContainer = document.getElementById("orderContainer");
+
+    // แปลง div ที่ต้องการเป็นรูป
+    const target = document.getElementById('personContent');
+    
+    // เก็บตำแหน่งเดิมของ orderContainer
+    const originalParent = orderContainer.parentElement;
+
+    if (orderChecked && orderContainer) {
+        // ย้าย orderContainer ไปยัง orderOnBill ชั่วคราว
+        orderOnBill.appendChild(orderContainer);
     }
 
-    function generateCanvas() {
-        html2canvas(target, { useCORS: true }).then(canvas => {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'screenshot.png';
-            link.click();
+    html2canvas(target, { useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'Bill_Shared.png';
+        link.click();
+
+        // แสดงปุ่มกลับหลังจากแปลงเสร็จ
+        buttons.forEach(button => {
+            button.style.display = 'inline-block';
         });
-    }
+        
+        // ซ่อน credit
+        credit.style.display = 'none';
+
+        if (orderChecked && orderContainer) {
+            // นำ orderContainer กลับไปที่ตำแหน่งเดิม
+            originalParent.appendChild(orderContainer);
+        }
+
+        // เรียกใช้ fetchDataHTML
+        fetchDataHTML();
+    });
 }
+
+
 
 function addPP() {
     // สร้างช่องสำหรับอัปโหลดไฟล์
@@ -340,25 +361,25 @@ function addPP() {
     inputFile.accept = 'image/*';  // รับเฉพาะไฟล์รูปภาพ
 
     // เมื่อเลือกไฟล์แล้ว
-    inputFile.addEventListener('change', function(event) {
+    inputFile.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
-            
-            reader.onload = function(e) {
+
+            reader.onload = function (e) {
                 // สร้างแสดงผลรูปภาพใน <div id="qrPromptpay">
                 const imgElement = document.createElement('img');
                 imgElement.src = e.target.result;  // กำหนด source ของรูป
                 imgElement.style.maxWidth = '100%';  // ปรับขนาดรูปภาพให้พอดีกับ div
                 imgElement.style.height = 'auto';
                 imgElement.alt = 'PromptPay QR';  // ข้อความแทนหากรูปไม่สามารถแสดงได้
-                
+
                 // เพิ่มรูปภาพที่อัปโหลดเข้าไปใน div
                 const qrDiv = document.getElementById('qrPromptpay');
                 qrDiv.innerHTML = '';  // ลบข้อมูลเก่าออกก่อนแสดงข้อมูลใหม่
                 qrDiv.appendChild(imgElement);  // เพิ่มรูปภาพเข้าไป
             };
-            
+
             reader.readAsDataURL(file);  // อ่านไฟล์เป็น base64
         }
     });

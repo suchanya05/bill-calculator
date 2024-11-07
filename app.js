@@ -66,7 +66,7 @@ function createButtons() {
 function createPersonList() {
     const personContainer = document.getElementById('personContainer');
     personContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
-    // constisVat = document.getElementById('vatCheckbox').checked
+
     if (person.length > 0) {
         const header = document.createElement('span');
         header.className = 'mb-2 fs-3 fw-bold text-left text-rgb';
@@ -239,7 +239,6 @@ function updateOrder(orderName, pay) {
             payNoVat: pay,
             persons: persons,
         });
-        console.log(orderList);
 
 
         personListInOrder = []
@@ -263,11 +262,10 @@ function deleteOrder(item) {
 
 function fetchDataHTML() {
     calculatePayment()
-
     createButtons()
     createPersonList()
     createOrderList()
-    applyRandomColor();
+    applyRandomColor()
 }
 
 
@@ -339,9 +337,6 @@ function calculatePayment() {
 }
 
 // ฟังก์ชันคำนวณเมื่อมีการเปลี่ยนแปลงสถานะของเช็คบ็อกซ์
-
-
-
 function exportImg() {
     const orderChecked = document.getElementById('orderCheckbox').checked;
 
@@ -398,7 +393,7 @@ function addPP() {
     // สร้างช่องสำหรับอัปโหลดไฟล์
     const inputFile = document.createElement('input');
     inputFile.type = 'file';
-    inputFile.accept = 'image/*';  // รับเฉพาะไฟล์รูปภาพ
+    inputFile.accept = 'image/*';
 
     // เมื่อเลือกไฟล์แล้ว
     inputFile.addEventListener('change', function (event) {
@@ -407,7 +402,7 @@ function addPP() {
             const reader = new FileReader();
 
             reader.onload = function (e) {
-                // สร้างแสดงผลรูปภาพใน <div id="qrPromptpay">
+
                 const imgElement = document.createElement('img');
                 imgElement.src = e.target.result;  // กำหนด source ของรูป
                 imgElement.style.maxWidth = '100%';  // ปรับขนาดรูปภาพให้พอดีกับ div
@@ -428,11 +423,6 @@ function addPP() {
     inputFile.click();
 }
 
-// fetchDataHTML()
-
-
-
-
 function getRandomColor() {
     // ถ้าใช้ครบทุกสีแล้วให้รีเซ็ต
     if (availableColors.length === 0) {
@@ -451,7 +441,6 @@ function getRandomColor() {
 
 function getPersonColor(name) {
     const personFound = person.find((item) => item.name === name);
-    console.log(personFound ? personFound.color : "#000");
 
     return personFound ? personFound.color : "#000"; // ถ้าไม่พบให้คืนสีดำเป็นค่าเริ่มต้น
 }

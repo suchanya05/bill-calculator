@@ -127,7 +127,17 @@ function createOrderList() {
 
         const btnDiv = document.createElement('div');
         btnDiv.className = 'col-md-2 mb-2 text-center';
-
+        if (item.persons.length > 0) {
+            const persons = item.persons
+            const personText = document.createElement('span');
+            personText.className = 'text-left row';
+            personText.textContent = `(`;
+            persons.forEach((personItem, index) => {
+                personText.textContent += index == persons.length - 1 ? personItem.name : personItem.name + ", "
+            })
+            personText.textContent += ") "
+            listDiv.appendChild(personText)
+        }
 
         // สร้างปุ่ม
         const text = document.createElement('span');
@@ -319,7 +329,7 @@ function exportImg() {
 
     // แปลง div ที่ต้องการเป็นรูป
     const target = document.getElementById('personContent');
-    
+
     // เก็บตำแหน่งเดิมของ orderContainer
     const originalParent = orderContainer.parentElement;
 
@@ -338,7 +348,7 @@ function exportImg() {
         buttons.forEach(button => {
             button.style.display = 'inline-block';
         });
-        
+
         // ซ่อน credit
         credit.style.display = 'none';
 

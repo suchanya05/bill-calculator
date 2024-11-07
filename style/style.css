@@ -66,6 +66,17 @@
     color: rgb(42, 78, 143);
 }
 
+.text-r {
+    color: #33FFF3;
+}
+
+.random-color {
+    /* font-size: 30px; */
+    /* font-weight: bold; */
+    text-align: center;
+    transition: color 0.5s ease; /* เพิ่มการเปลี่ยนสีแบบนุ่มนวล */
+}
+
 body {
     font-family: 'Itim', sans-serif;
 }

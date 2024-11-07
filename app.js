@@ -4,6 +4,15 @@ var orderList = []
 
 var personListInOrder = [];
 
+const colors = [
+    "#D32F2F", "#C2185B", "#7B1FA2", "#512DA8", "#303F9F",
+    "#1976D2", "#0288D1", "#0097A7", "#00796B", "#388E3C",
+    "#689F38", "#AFB42B", "#F57C00", "#E64A19", "#5D4037",
+    "#455A64", "#8E24AA", "#6A1B9A", "#283593", "#1E88E5"
+];
+
+let availableColors = [...colors];
+
 function createButtons() {
     const buttonContainer = document.getElementById('buttonContainer');
     buttonContainer.innerHTML = ''; // ล้างเนื้อหาก่อนเริ่มสร้างใหม่
@@ -20,7 +29,20 @@ function createButtons() {
         // สร้างปุ่ม
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = personInOrder.length > 0 ? 'btn btn-info btn-sm text-light row' : 'btn btn-outline-success btn-sm row';
+        if (personInOrder.length > 0) {
+            button.className = 'btn btn-sm text-light row';
+            button.style.backgroundColor = item.color
+
+        } else {
+            button.className = 'btn btn-sm row';
+            button.style.borderWidth = '1px';
+            button.style.borderStyle = 'solid';
+            button.style.color = item.color;
+            button.style.borderColor = item.color;
+        }
+
+
+
         button.textContent = `${item.name}`;
         button.id = `btn${item.name}`
 
@@ -69,14 +91,15 @@ function createPersonList() {
         // สร้างปุ่ม
         const text = document.createElement('span');
         // text.type = 'button';
-        text.className = 'text-right';
+        text.className = 'text-right fs-5';
         text.textContent = `${item.name}`;
-
+        text.style.color = item.color;
 
 
         const textPay = document.createElement('span');
         // text.type = 'button';
-        textPay.className = 'text-right';
+        textPay.className = 'text-right fs-5';
+        textPay.style.color = "#7131b9"
         textPay.textContent = `จ่าย ${Math.round(item.pay)} บาท`;
 
 
@@ -120,36 +143,43 @@ function createOrderList() {
         textDiv.className = 'col-6 mb-2';
 
         const payDiv = document.createElement('div');
-        payDiv.className = 'col-6 mb-2 text-start';
+        payDiv.className = 'col-6 mb-2 text-start ';
 
         const listDiv = document.createElement('div');
-        listDiv.className = 'col-md-10 mb-2 text-start';
+        listDiv.className = 'col-md-10 mb-2 text-end';
 
         const btnDiv = document.createElement('div');
         btnDiv.className = 'col-md-2 mb-2 text-center';
-        if (item.persons.length > 0) {
-            const persons = item.persons
-            const personText = document.createElement('span');
-            personText.className = 'text-left row';
-            personText.textContent = `(`;
-            persons.forEach((personItem, index) => {
-                personText.textContent += index == persons.length - 1 ? personItem.name : personItem.name + ", "
-            })
-            personText.textContent += ") "
-            listDiv.appendChild(personText)
-        }
 
-        // สร้างปุ่ม
+        if (item.persons.length > 0) {
+            const persons = item.persons;
+            const startBracket = document.createElement('span');
+            startBracket.textContent = "(";
+            listDiv.appendChild(startBracket);
+            persons.forEach((personItem, index) => {
+                const personText = document.createElement('span');
+                personText.style.color = getPersonColor(personItem.name);
+                personText.textContent = personItem.name;
+                listDiv.appendChild(personText);
+                if (index < persons.length - 1) {
+                    const comma = document.createElement('span');
+                    comma.textContent = ", ";
+                    listDiv.appendChild(comma);
+                }
+            });
+            const endBracket = document.createElement('span');
+            endBracket.textContent = ")";
+            listDiv.appendChild(endBracket);
+        }
         const text = document.createElement('span');
-        // text.type = 'button';
-        text.className = 'text-start';
+        text.className = 'text-start random-color';
         text.textContent = `${index + 1}. ${item.orderName}`;
 
 
 
         const textPay = document.createElement('span');
         // text.type = 'button';
-        textPay.className = 'text-start';
+        textPay.className = 'text-start random-color';
         textPay.textContent = `${item.pay} บาท`;
 
 
@@ -160,8 +190,9 @@ function createOrderList() {
         icon.id = `icon${index + 1}`
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn-outline-danger btn-sm row';
+        button.className = 'btn btn-outline-danger btn-sm row ';
         button.appendChild(icon);
+
 
         // จัดการเมื่อคลิกปุ่ม
         button.onclick = function () {
@@ -181,15 +212,19 @@ function createOrderList() {
 function updatePerson(input) {
     if (!input) {
         alert("กรุณากรอกชื่อ")
+    } else if (checkPerson(input)) {
+        alert("ชื่อนี้มีในรายการแล้ว")
     } else {
-        person.push({ name: input, pay: 0 });
+        person.push({ name: input, pay: 0, color: getRandomColor() });
         document.getElementById('personName').value = "";
         fetchDataHTML()
     }
 }
 
 function updateOrder(orderName, pay) {
-    if (!orderName) {
+    if (checkOrder(orderName)) {
+        alert("ชื่อรายการซ้ำ")
+    } else if (!orderName) {
         alert("กรุณากรอกชื่อรายการอาหาร")
     } else if (!pay) {
         alert("กรุณากรอกราคาอาหาร")
@@ -215,15 +250,9 @@ function updateOrder(orderName, pay) {
 
 }
 
-// ฟังก์ชันอัปเดตการแสดงค่า pay ของแต่ละคน
-function updateDisplay() {
-    console.clear(); // แสดงข้อมูลที่อัปเดตใน console
-    console.table(person);
-    fetchDataHTML()
-}
-
 function deletePerson(item) {
     person = person.filter(p => p.name !== item.name);
+    removePersonFromOrders(item.name)
     fetchDataHTML()
 }
 
@@ -235,10 +264,10 @@ function deleteOrder(item) {
 function fetchDataHTML() {
     calculatePayment()
 
-
     createButtons()
     createPersonList()
     createOrderList()
+    applyRandomColor();
 }
 
 
@@ -264,6 +293,7 @@ function deletePersonToOrder(personName) {
 
 function calculatePayment() {
 
+    orderList = orderList.filter((item) => item.persons.length >= 1);
 
     for (let index = 0; index < person.length; index++) {
         person[index].pay = 0;
@@ -399,3 +429,55 @@ function addPP() {
 }
 
 // fetchDataHTML()
+
+
+
+
+function getRandomColor() {
+    // ถ้าใช้ครบทุกสีแล้วให้รีเซ็ต
+    if (availableColors.length === 0) {
+        availableColors = [...colors];
+    }
+
+    // สุ่มดัชนีในลิสต์สีที่เหลืออยู่
+    const randomIndex = Math.floor(Math.random() * availableColors.length);
+    const selectedColor = availableColors[randomIndex];
+
+    // นำสีที่เลือกออกจากลิสต์
+    availableColors.splice(randomIndex, 1);
+
+    return selectedColor;
+}
+
+function getPersonColor(name) {
+    const personFound = person.find((item) => item.name === name);
+    console.log(personFound ? personFound.color : "#000");
+
+    return personFound ? personFound.color : "#000"; // ถ้าไม่พบให้คืนสีดำเป็นค่าเริ่มต้น
+}
+
+function checkPerson(name) {
+    const personFound = person.find((item) => item.name === name);
+    return personFound ? true : false;
+}
+
+function checkOrder(orderName) {
+    const orderFound = orderList.find((item) => item.orderName === orderName);
+    return orderFound ? true : false;
+}
+
+function applyRandomColor() {
+    const elements = document.querySelectorAll('.random-color');
+    elements.forEach(element => {
+        element.style.color = getRandomColor();
+    });
+}
+
+function removePersonFromOrders(personName) {
+    for (let index = 0; index < orderList.length; index++) {
+        orderList[index].persons = orderList[index].persons.filter(person => person.name !== personName);
+    }
+}
+
+// เรียกใช้ฟังก์ชันทุกครั้งที่ต้องการเปลี่ยนสี
+applyRandomColor();
